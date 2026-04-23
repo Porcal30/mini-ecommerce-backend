@@ -1,10 +1,10 @@
 ## Backend API
 
 ### Live API
-[Backend URL]
+https://mini-ecommerce-backend-rkt8.onrender.com/
 
 ### API Docs
-[Swagger URL]
+https://mini-ecommerce-backend-rkt8.onrender.com/api-docs/
 
 ### Main Endpoints
 - POST /api/v1/auth/register
