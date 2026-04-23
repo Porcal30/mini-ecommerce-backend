@@ -1,1 +1,22 @@
-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjExN2I0YzNhLTgxNGEtNDc4Yy1iNmI5LTYxM2FjMGM3NmJhNiIsImVtYWlsIjoiY2hyaXN0aWFuQGV4YW1wbGUuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzc2OTQ0MDM0LCJleHAiOjE3Nzc1NDg4MzR9.0tI7mJbTWJ5RwqxCauCu_lWp3dBTB40pJ_CBiR4hTnM
+## Backend API
+
+### Live API
+[Backend URL]
+
+### API Docs
+[Swagger URL]
+
+### Main Endpoints
+- POST /api/v1/auth/register
+- POST /api/v1/auth/login
+- GET /api/v1/auth/me
+- GET /api/v1/categories
+- POST /api/v1/categories
+- GET /api/v1/products
+- POST /api/v1/products
+- POST /api/v1/products/:id/image
+
+### Backend Setup
+cd server
+npm install
+npm run dev
