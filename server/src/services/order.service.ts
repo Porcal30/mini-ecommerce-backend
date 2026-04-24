@@ -80,7 +80,11 @@ export const getMyOrders = async (userId: string) => {
         product_name,
         price,
         quantity,
-        subtotal
+        subtotal,
+        products (
+          id,
+          image_url
+        )
       )
     `)
     .eq('user_id', userId)
@@ -102,7 +106,11 @@ export const getMyOrderById = async (userId: string, orderId: string) => {
         product_name,
         price,
         quantity,
-        subtotal
+        subtotal,
+        products (
+          id,
+          image_url
+        )
       )
     `)
     .eq('id', orderId)
@@ -130,7 +138,11 @@ export const getAllOrders = async () => {
         product_name,
         price,
         quantity,
-        subtotal
+        subtotal,
+        products (
+          id,
+          image_url
+        )
       )
     `)
     .order('created_at', { ascending: false });
