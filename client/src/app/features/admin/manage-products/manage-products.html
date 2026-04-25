@@ -1,0 +1,228 @@
+<div class="min-h-screen bg-gray-100 px-4 py-6 md:px-8">
+  <div class="mx-auto max-w-7xl">
+
+    <!-- HEADER -->
+<div class="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+
+  <!-- LEFT -->
+  <div>
+    <span class="inline-flex mb-2 px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-semibold">
+      Admin Panel
+    </span>
+
+    <h1 class="text-2xl md:text-3xl font-bold text-gray-900">
+      Manage Products
+    </h1>
+
+    <p class="text-sm text-gray-500 mt-1">
+      Create, update, delete, and upload product images.
+    </p>
+  </div>
+
+  <!-- RIGHT -->
+  <a
+    routerLink="/admin"
+    class="inline-flex items-center gap-2 justify-center rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 hover:text-blue-600 transition"
+  >
+    ← Back to Dashboard
+  </a>
+
+</div>
+    <!-- FORM -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 mb-6">
+      <h2 class="text-lg font-semibold mb-4">
+        {{ editingId ? 'Edit Product' : 'Create Product' }}
+      </h2>
+
+      <p *ngIf="errorMessage" class="mb-4 bg-red-50 text-red-700 px-4 py-2 rounded-lg text-sm">
+        {{ errorMessage }}
+      </p>
+
+      <p *ngIf="successMessage" class="mb-4 bg-green-50 text-green-700 px-4 py-2 rounded-lg text-sm">
+        {{ successMessage }}
+      </p>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+        <input [(ngModel)]="formData.name" placeholder="Product Name"
+          class="border border-gray-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500" />
+
+        <input [(ngModel)]="formData.price" type="number" placeholder="Price"
+          class="border border-gray-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500" />
+
+        <select [(ngModel)]="formData.category_id"
+          class="border border-gray-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500">
+          <option value="">Select Category</option>
+          <option *ngFor="let category of categories" [value]="category.id">
+            {{ category.name }}
+          </option>
+        </select>
+
+        <input [(ngModel)]="formData.stock" type="number" placeholder="Stock"
+          class="border border-gray-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500" />
+
+        <input [(ngModel)]="formData.description" placeholder="Description"
+          class="border border-gray-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500" />
+      </div>
+
+      <div class="mt-5 flex gap-3">
+        <button (click)="submitForm()"
+          class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg font-medium">
+          {{ editingId ? 'Update Product' : 'Create Product' }}
+        </button>
+
+        <button (click)="resetForm()"
+          class="bg-gray-200 hover:bg-gray-300 text-gray-800 px-5 py-2 rounded-lg font-medium">
+          Reset
+        </button>
+      </div>
+    </div>
+
+    <!-- LOADING -->
+    <div *ngIf="isLoading" class="bg-white p-8 rounded-xl shadow text-center text-gray-500">
+      Loading products...
+    </div>
+
+    <!-- EMPTY -->
+    <div *ngIf="!isLoading && products.length === 0"
+      class="bg-white p-8 rounded-xl shadow text-center text-gray-500">
+      No products available. Create your first product above.
+    </div>
+
+    <!-- MOBILE VIEW -->
+    <div *ngIf="!isLoading && products.length > 0"
+      class="grid grid-cols-1 gap-4 md:hidden">
+
+      <div *ngFor="let product of products"
+        class="bg-white rounded-xl shadow p-4">
+
+        <div class="flex gap-4">
+          <img
+            [src]="product.image_url || 'https://placehold.co/100x80?text=No+Image'"
+            class="w-24 h-24 object-cover rounded border" />
+
+          <div class="flex-1">
+            <h3 class="font-semibold">{{ product.name }}</h3>
+
+            <p class="text-blue-600 font-bold">₱{{ product.price }}</p>
+
+            <!-- STOCK MOBILE -->
+            <p
+              class="text-sm mt-1 font-medium"
+              [ngClass]="{
+                'text-green-600': product.stock > 10,
+                'text-yellow-600': product.stock > 0 && product.stock <= 10,
+                'text-red-600': product.stock === 0
+              }"
+            >
+              Stock: {{ product.stock }}
+            </p>
+          </div>
+        </div>
+
+        <div class="mt-4">
+          <input type="file" accept="image/*"
+            (change)="onImageSelected($event)"
+            class="border p-2 rounded w-full" />
+
+          <button
+            (click)="uploadImage(product.id)"
+            [disabled]="uploadingProductId === product.id"
+            class="mt-2 bg-blue-600 text-white px-3 py-2 rounded w-full">
+            {{ uploadingProductId === product.id ? 'Uploading...' : 'Upload Image' }}
+          </button>
+        </div>
+
+        <div class="mt-4 flex gap-2">
+          <button (click)="editProduct(product)"
+            class="flex-1 bg-yellow-500 text-white py-2 rounded">
+            Edit
+          </button>
+
+          <button (click)="deleteProduct(product.id)"
+            class="flex-1 bg-red-600 text-white py-2 rounded">
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- DESKTOP TABLE -->
+    <div *ngIf="!isLoading && products.length > 0"
+      class="hidden md:block bg-white rounded-xl shadow overflow-hidden">
+
+      <table class="w-full text-left">
+        <thead class="bg-gray-50 border-b">
+          <tr>
+            <th class="px-5 py-4 text-sm font-semibold">Image</th>
+            <th class="px-5 py-4 text-sm font-semibold">Name</th>
+            <th class="px-5 py-4 text-sm font-semibold">Price</th>
+            <th class="px-5 py-4 text-sm font-semibold">Stock</th>
+            <th class="px-5 py-4 text-sm font-semibold">Upload Image</th>
+            <th class="px-5 py-4 text-sm font-semibold text-right">Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let product of products"
+            class="border-b hover:bg-gray-50">
+
+            <td class="px-5 py-4">
+              <img
+                [src]="product.image_url || 'https://placehold.co/100x80?text=No+Image'"
+                class="w-20 h-16 object-cover rounded border" />
+            </td>
+
+            <td class="px-5 py-4 font-medium">
+              {{ product.name }}
+            </td>
+
+            <td class="px-5 py-4 text-blue-600 font-semibold">
+              ₱{{ product.price }}
+            </td>
+
+            <!-- STOCK DESKTOP -->
+            <td class="px-5 py-4">
+              <span
+                class="px-3 py-1 rounded-full text-xs font-semibold"
+                [ngClass]="{
+                  'bg-green-100 text-green-700': product.stock > 10,
+                  'bg-yellow-100 text-yellow-700': product.stock > 0 && product.stock <= 10,
+                  'bg-red-100 text-red-700': product.stock === 0
+                }"
+              >
+                {{ product.stock }} in stock
+              </span>
+            </td>
+
+            <td class="px-5 py-4">
+              <input type="file" accept="image/*"
+                (change)="onImageSelected($event)"
+                class="border p-2 rounded" />
+
+              <button
+                (click)="uploadImage(product.id)"
+                [disabled]="uploadingProductId === product.id"
+                class="ml-2 bg-blue-600 text-white px-3 py-1 rounded">
+                {{ uploadingProductId === product.id ? 'Uploading...' : 'Upload' }}
+              </button>
+            </td>
+
+            <td class="px-5 py-4 text-right">
+              <button (click)="editProduct(product)"
+                class="bg-yellow-500 text-white px-3 py-1 rounded mr-2">
+                Edit
+              </button>
+
+              <button (click)="deleteProduct(product.id)"
+                class="bg-red-600 text-white px-3 py-1 rounded">
+                Delete
+              </button>
+            </td>
+
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>

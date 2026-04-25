@@ -1,0 +1,132 @@
+<div class="min-h-screen bg-gray-100 px-4 py-6 md:px-8">
+  <div class="mx-auto max-w-6xl">
+
+    <!-- BACK LINK -->
+    <a
+      routerLink="/orders"
+      class="inline-flex items-center mb-6 text-sm font-medium text-blue-600 hover:text-blue-700"
+    >
+      ← Back to Orders
+    </a>
+
+    <!-- LOADING -->
+    <div
+      *ngIf="isLoading"
+      class="bg-white rounded-2xl shadow-sm border border-gray-200 p-10 text-center text-gray-500"
+    >
+      Loading order...
+    </div>
+
+    <!-- ERROR -->
+    <p
+      *ngIf="errorMessage"
+      class="mb-4 rounded-xl bg-red-50 text-red-700 px-4 py-3 text-sm border border-red-200"
+    >
+      {{ errorMessage }}
+    </p>
+
+    <!-- ORDER CONTENT -->
+    <div *ngIf="!isLoading && order" class="space-y-6">
+
+      <!-- ORDER SUMMARY -->
+      <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+        <div class="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
+
+          <div>
+            <p class="text-sm text-gray-500 mb-1">
+              Order Details
+            </p>
+
+            <h1 class="text-2xl md:text-3xl font-bold text-gray-900 break-all">
+              Order #{{ order.id }}
+            </h1>
+
+            <p class="text-sm text-gray-500 mt-2">
+              Placed on {{ order.created_at | date:'medium' }}
+            </p>
+          </div>
+
+          <div class="md:text-right">
+            <span class="inline-flex px-3 py-1 rounded-full text-xs font-semibold capitalize bg-blue-50 text-blue-700 mb-3">
+              {{ order.status }}
+            </span>
+
+            <p class="text-sm text-gray-500">
+              Total Amount
+            </p>
+
+            <p class="text-3xl font-bold text-blue-600">
+              ₱{{ getOrderTotal() }}
+            </p>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ORDER ITEMS -->
+      <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+        <div class="px-6 py-5 border-b border-gray-200">
+          <h2 class="text-xl font-bold text-gray-900">
+            Order Items
+          </h2>
+          <p class="text-sm text-gray-500 mt-1">
+            Products included in this order.
+          </p>
+        </div>
+
+        <div *ngIf="items.length === 0" class="p-8 text-center text-gray-500">
+          No items found for this order.
+        </div>
+
+        <div
+          *ngFor="let item of items"
+          class="p-5 border-b last:border-b-0 border-gray-200 flex flex-col sm:flex-row gap-5 hover:bg-gray-50 transition"
+        >
+          <img
+            [src]="getProductImage(item)"
+            [alt]="getProductName(item)"
+            class="w-full sm:w-28 h-40 sm:h-28 object-cover rounded-xl bg-gray-100 border border-gray-100"
+          />
+
+          <div class="flex-1 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+              <h3 class="font-bold text-gray-900 text-lg">
+                {{ getProductName(item) }}
+              </h3>
+
+              <p class="text-blue-600 font-semibold mt-1">
+                ₱{{ getProductPrice(item) }}
+              </p>
+
+              <p class="text-sm text-gray-500 mt-1">
+                Quantity: {{ item.quantity }}
+              </p>
+            </div>
+
+            <div class="sm:text-right">
+              <p class="text-sm text-gray-500">
+                Subtotal
+              </p>
+
+              <p class="font-bold text-gray-900 text-lg">
+                ₱{{ getProductPrice(item) * item.quantity }}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CUSTOMER NOTE -->
+      <div class="rounded-2xl border border-blue-100 bg-blue-50 p-5">
+        <h3 class="font-semibold text-gray-900 mb-1">
+          Order Status
+        </h3>
+        <p class="text-sm text-gray-600">
+          You can track this order from your orders page. Status updates will appear automatically once the store updates your order.
+        </p>
+      </div>
+
+    </div>
+
+  </div>
+</div>

@@ -1,0 +1,161 @@
+<div class="min-h-screen bg-gray-100 px-4 py-6 md:px-8">
+  <div class="mx-auto max-w-6xl">
+
+    <!-- BACK LINK -->
+    <a
+      routerLink="/products"
+      class="inline-flex items-center mb-6 text-sm font-medium text-blue-600 hover:text-blue-700"
+    >
+      ← Back to Products
+    </a>
+
+    <!-- LOADING -->
+    <div
+      *ngIf="isLoading"
+      class="bg-white rounded-2xl shadow-sm border border-gray-200 p-10 text-center text-gray-500"
+    >
+      Loading product...
+    </div>
+
+    <!-- ERROR -->
+    <div
+      *ngIf="errorMessage"
+      class="mb-6 rounded-xl bg-red-50 text-red-700 px-4 py-3 text-sm border border-red-200"
+    >
+      {{ errorMessage }}
+    </div>
+
+    <!-- PRODUCT DETAIL -->
+    <div
+      *ngIf="!isLoading && product"
+      class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden grid grid-cols-1 lg:grid-cols-2"
+    >
+      <!-- IMAGE -->
+      <div class="bg-gray-50 p-4 sm:p-6 flex items-center justify-center">
+        <img
+          [src]="product.image_url || 'https://placehold.co/600x400?text=Product'"
+          [alt]="product.name"
+          class="w-full max-h-[520px] object-contain rounded-xl bg-white"
+        />
+      </div>
+
+      <!-- DETAILS -->
+      <div class="p-6 sm:p-8 lg:p-10 flex flex-col">
+        <div class="mb-4">
+          <span class="inline-flex mb-3 px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-semibold">
+            Product Details
+          </span>
+
+          <h1 class="text-3xl md:text-4xl font-bold text-gray-900 leading-tight">
+            {{ product.name }}
+          </h1>
+
+          <p class="text-gray-600 mt-4 leading-relaxed">
+            {{ product.description || 'No description available.' }}
+          </p>
+        </div>
+
+        <!-- PRICE -->
+        <div class="my-6 rounded-xl bg-gray-50 border border-gray-200 p-5">
+          <p class="text-sm text-gray-500 mb-1">
+            Price
+          </p>
+
+          <p class="text-3xl font-bold text-blue-600">
+            ₱{{ product.price }}
+          </p>
+        </div>
+
+        <!-- ADD TO CART -->
+        <div *ngIf="!isAdmin()" class="mb-5">
+          <button
+            (click)="addToCart()"
+            [disabled]="isAddingToCart"
+            class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-xl font-semibold shadow-sm transition disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {{ isAddingToCart ? 'Adding...' : 'Add to Cart' }}
+          </button>
+
+          <p
+            *ngIf="cartMessage"
+            class="mt-3 rounded-lg bg-green-50 text-green-700 px-4 py-2 text-sm border border-green-200"
+          >
+            {{ cartMessage }}
+          </p>
+
+          <p
+            *ngIf="cartError"
+            class="mt-3 rounded-lg bg-red-50 text-red-700 px-4 py-2 text-sm border border-red-200"
+          >
+            {{ cartError }}
+          </p>
+        </div>
+
+        <!-- ADMIN MESSAGE -->
+        <p
+          *ngIf="isAdmin()"
+          class="mb-5 rounded-lg bg-gray-50 text-gray-600 px-4 py-3 text-sm border border-gray-200"
+        >
+          Admin account can view products but cannot add items to cart.
+        </p>
+
+        <!-- EXTRA PRODUCT INFO -->
+<div class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+  <div class="rounded-xl border border-gray-200 bg-gray-50 p-4">
+    <p class="text-sm text-gray-500 mb-1">Availability</p>
+
+    <p
+      class="font-semibold"
+      [ngClass]="{
+        'text-green-600': product.stock > 0,
+        'text-red-600': product.stock === 0
+      }"
+    >
+      {{ product.stock > 0 ? 'In Stock' : 'Out of Stock' }}
+    </p>
+  </div>
+
+  <div class="rounded-xl border border-gray-200 bg-gray-50 p-4">
+    <p class="text-sm text-gray-500 mb-1">Stock</p>
+
+    <p class="font-semibold text-gray-900">
+      {{ product.stock }} available
+    </p>
+  </div>
+
+  <div class="rounded-xl border border-gray-200 bg-gray-50 p-4">
+    <p class="text-sm text-gray-500 mb-1">Shipping</p>
+
+    <p class="font-semibold text-gray-900">
+      Fast local delivery
+    </p>
+  </div>
+
+  <div class="rounded-xl border border-gray-200 bg-gray-50 p-4">
+    <p class="text-sm text-gray-500 mb-1">Payment</p>
+
+    <p class="font-semibold text-gray-900">
+      Secure checkout
+    </p>
+  </div>
+
+</div>
+
+<!-- SHOPPING NOTES -->
+<div class="mt-6 rounded-xl border border-blue-100 bg-blue-50 p-5">
+  <h2 class="font-semibold text-gray-900 mb-2">
+    Why shop with Mini E-Commerce?
+  </h2>
+
+  <ul class="space-y-2 text-sm text-gray-600">
+    <li>✓ Quality products selected for everyday use</li>
+    <li>✓ Easy cart and order tracking</li>
+    <li>✓ Simple and secure shopping experience</li>
+  </ul>
+</div>
+      </div>
+    </div>
+
+  </div>
+</div>
